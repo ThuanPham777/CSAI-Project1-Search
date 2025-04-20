@@ -144,13 +144,15 @@ class Game:
         if self.level_selection or self.game_over or self.game_won or self.quit_confirmation:
             return
 
-        # Update ghosts only if player has moved (hoặc ở level 1-5 thì ghost di chuyển ngay)
+    # Update ghosts only if player has moved (or in level 1-5, ghosts move immediately)
         if self.current_level in [1, 2, 3, 4, 5] or self.player_moved:
             for ghost in self.ghosts:
-                ghost.find_path(self.maze, self.pacman.position)
-                ghost.move(self.maze)
+                # Gọi find_path để thu thập metrics và sau đó di chuyển ghost
+                metrics = ghost.find_path(self.maze, self.pacman.position)
+                ghost.move(self.maze, self.pacman.position)
+                print(f"Ghost {ghost.id} metrics: Time={metrics['time']:.6f}s, Memory={metrics['memory']:.2f}KB, Nodes={metrics['nodes']}")
 
-        # Check collisions with ghosts
+    # Check collisions with ghosts
         for ghost in self.ghosts:
             if ghost.position == self.pacman.position:
                 self.pacman.lives -= 1
@@ -164,7 +166,7 @@ class Game:
                     self.player_moved = False
                 break
 
-        # Check win condition (no dots or power pellets left) - Chỉ áp dụng cho Level 6
+    # Check win condition (no dots or power pellets left) - Only for Level 6
         if self.current_level == 6:
             dots_remaining = any(
                 cell in [1, 2]
@@ -173,7 +175,6 @@ class Game:
             )
             if not dots_remaining:
                 self.game_won = True
-
     def draw(self):
         screen.fill(BLACK)
 

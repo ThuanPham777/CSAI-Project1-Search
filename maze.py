@@ -39,7 +39,8 @@ class Maze:
                 if not self.is_wall(nx, ny):  # Ghost có thể đi qua cửa (cell == 9)
                     moves.append((nx, ny))
         return moves
-
+    def is_valid_position(self, x, y):
+        return 0 <= x < self.width and 0 <= y < self.height
 # Định nghĩa boards (giữ nguyên)
 boards = [
     [6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5],
